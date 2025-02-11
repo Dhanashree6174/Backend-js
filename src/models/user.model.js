@@ -50,16 +50,19 @@ const userSchema = new Schema(
     timestamps: true
 });
 
+//hooks
+
 // encrypt password
 userSchema.pre("save", async function(next) {
     if(!this.isModified("password")) return next();
-        // this.isModified("string") --> encrypt password only if it has been changed
+        // this.isModified("string") --> encrypt password only if it has been changed (so that if any other field is changed, this function is not run)
     this.password = bcrypt.hash(this.password, 10) // hash(kise hash karu?, kitne rounds/ salts?)
-    next() // call next as this is middleware so pass on the next flag
+    next() // call next as this is middleware so pass on the next flag -> it is necessary to pass the flag at the end of a middleware
 }) // do smth before data is saved
 // we cannot write arrow function directly for callback bcoz it does not have this reference. (reference of userSchema)
 // encryption algorithm takes some time so we need to make the function async
 
+//methods (methods is an object of methods)
 
 // designing custom methods --> injecting methods in our schema
 userSchema.methods.isPasswordCorrect = async function(password){
@@ -73,14 +76,14 @@ userSchema.methods.generateAccessToken = function() {
             _id: this._id,
             email:this.email,
             username: this.username,
-            fullName: this.fullName, // key: value from db
-        }, // payload
+            fullName: this.fullName, // payload key: value from db
+        }, // payload -> what information to keep
         process.env.ACCESS_TOKEN_SECRET,
         {
             expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
         }
-    ) // sign method generates a token
-} // no need of async here as it does need a lot of time
+    ) // sign method generates a token, we are returning that token
+} // no need of async here as it does not need a lot of time
 
 userSchema.methods.generateRefreshToken = function() {
     return jwt.sign(
@@ -93,7 +96,7 @@ userSchema.methods.generateRefreshToken = function() {
         }
     ) 
 } // no need of async here
-// refresh token contains less info (only id), it is refreshed again and again
+// refresh token is similar to access token but it contains less info (only id), it is refreshed again and again
 
 export const User = mongoose.model("User", userSchema);
 
@@ -102,4 +105,8 @@ export const User = mongoose.model("User", userSchema);
 
 // pre hook (middleware of mongoose) -> just before saving data, we can run this hook, it is basically a method (any code can be written into this)
 
+// such hooks are mostly written in the model file itself.
+
 // jwt is bearer token -> jo use bear karte he use sahi man lete he -> jo bhi ye bhejega, use data bhej denge
+
+// all methods and hooks have access to all database objects/attributes using this reference

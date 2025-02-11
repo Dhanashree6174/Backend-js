@@ -26,3 +26,4 @@ class ApiError extends Error {
 export {ApiError};
 
 // to generalise response format, we are using the req, res from express and express does not actually provide an explicit class for response like node did for errors, but we can write our own class for response (ie, no need to extend any other class and overwrite stuff)
+
