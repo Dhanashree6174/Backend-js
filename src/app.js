@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 
 const app = express();
 
+// middlewares
+
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN, // whom to allow to talk to our backend (we only want to allow our frontend)
@@ -21,6 +23,18 @@ app.use(express.static("public")); // static is used to store assets like images
 
 // configure cookies
 app.use(cookieParser()); // it also has optional options
+
+
+// routes import (import statements are written in app.js and not at the start as well)
+import userRouter from './routes/user.routes.js';
+
+//router declaration
+// app.get() won't work here since now we have segregated router, controller etc, so we need to use a middleware to bring router --> app.use()
+
+// app.use("/users", userRouter); // when any user goes to /users url, controller is tranferred to userRouter --> user.routes.js file
+// standard practice is to specify that we are defining an api, then its version and then our router
+app.use("/api/v1/users", userRouter);
+
 
 export { app }; // can be exported as default as well
 

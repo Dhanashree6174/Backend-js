@@ -1,6 +1,6 @@
 // requestHandler is the name of our function
 const asyncHandler = (requestHandler) => {
-    (req,res,next) => {
+    return (req,res,next) => {
         // creating a promise manually, catch = reject
         Promise
         .resolve(requestHandler(req,res,next))
