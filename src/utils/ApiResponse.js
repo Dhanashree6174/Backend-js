@@ -8,3 +8,5 @@ class ApiResponse {
   }
 }
 // we will always send the response through this class
+
+export { ApiResponse };

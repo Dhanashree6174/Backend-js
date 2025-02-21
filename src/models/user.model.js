@@ -56,7 +56,7 @@ const userSchema = new Schema(
 userSchema.pre("save", async function(next) {
     if(!this.isModified("password")) return next();
         // this.isModified("string") --> encrypt password only if it has been changed (so that if any other field is changed, this function is not run)
-    this.password = bcrypt.hash(this.password, 10) // hash(kise hash karu?, kitne rounds/ salts?)
+    this.password = await bcrypt.hash(this.password, 10) // hash(kise hash karu?, kitne rounds/ salts?)
     next() // call next as this is middleware so pass on the next flag -> it is necessary to pass the flag at the end of a middleware
 }) // do smth before data is saved
 // we cannot write arrow function directly for callback bcoz it does not have this reference. (reference of userSchema)
